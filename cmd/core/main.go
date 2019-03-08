@@ -17,6 +17,9 @@ type envConfig struct {
 
 	// Target is the endpoint to receive cloudevents.
 	Target string `envconfig:"TARGET" required:"true"`
+
+	// StrictType is the type this function will only handle.
+	StrictType string `envconfig:"STRICT_TYPE" default:""`
 }
 
 func main() {
@@ -41,7 +44,10 @@ func _main(args []string) int {
 		log.Fatalf("Failed to create client: %s", err.Error())
 	}
 
-	cmds := &commands.Commands{Ce: c}
+	cmds := &commands.Commands{
+		Ce:         c,
+		StrictType: env.StrictType,
+	}
 
 	ctx := context.Background()
 	if err := c.StartReceiver(ctx, cmds.Receive); err != nil {

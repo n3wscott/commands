@@ -1,0 +1,37 @@
+apiVersion: serving.knative.dev/v1alpha1
+kind: Service
+metadata:
+  name: echo-command
+  labels:
+    knative.dev/type: "function"
+spec:
+  runLatest:
+    configuration:
+      revisionTemplate:
+        spec:
+          container:
+            image: github.com/botless/commands/cmd/core/
+            env:
+            - name: TARGET
+              value: "http://slack-out-channel-7ls72.default.svc.cluster.local/" # <---------------   TODO: update this.
+            - name: STRICT_TYPE
+              value: "botless.bot.command.echo"
+---
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Subscription
+metadata:
+  name: echo-command
+spec:
+  channel:
+    apiVersion: eventing.knative.dev/v1alpha1
+    kind: Channel
+    name: parser-out
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1alpha1
+      kind: Service
+      name: echo-command
+
+
+
+

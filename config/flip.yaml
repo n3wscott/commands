@@ -1,7 +1,7 @@
 apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
-  name: core-commands
+  name: flip-command
   labels:
     knative.dev/type: "function"
 spec:
@@ -14,11 +14,13 @@ spec:
             env:
             - name: TARGET
               value: "http://slack-out-channel-7ls72.default.svc.cluster.local/" # <---------------   TODO: update this.
+            - name: STRICT_TYPE
+              value: "botless.bot.command.flip"
 ---
 apiVersion: eventing.knative.dev/v1alpha1
 kind: Subscription
 metadata:
-  name: core-commands
+  name: flip-command
 spec:
   channel:
     apiVersion: eventing.knative.dev/v1alpha1
@@ -28,4 +30,4 @@ spec:
     ref:
       apiVersion: serving.knative.dev/v1alpha1
       kind: Service
-      name: core-commands
+      name: flip-command
