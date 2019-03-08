@@ -17,10 +17,8 @@ type Commands struct {
 }
 
 func (c *Commands) Receive(event cloudevents.Event) {
-	log.Printf("--------------------------")
-	log.Printf("got an event: %+v", event)
 	// don't block the caller.
-	go c.Receive(event)
+	go c.receive(event)
 }
 
 func (c *Commands) receive(event cloudevents.Event) {
@@ -52,10 +50,12 @@ func (c *Commands) command(event cloudevents.Event, cmd events.Command) {
 }
 
 func (c *Commands) echo(parent cloudevents.Event, cmd events.Command) {
+	ec := parent.Context.AsV02()
 	event := cloudevents.Event{
 		Context: cloudevents.EventContextV02{
-			Type:   events.Bot.Type("response"),
-			Source: *types.ParseURLRef("//botless/slack/echo"),
+			Type:       events.Bot.Type("response"),
+			Source:     *types.ParseURLRef("//botless/command/echo"),
+			Extensions: ec.Extensions,
 		}.AsV02(),
 		Data: events.Message{
 			Channel: cmd.Channel,
@@ -64,14 +64,18 @@ func (c *Commands) echo(parent cloudevents.Event, cmd events.Command) {
 	}
 	if _, err := c.Ce.Send(context.TODO(), event); err != nil {
 		log.Printf("failed to send cloudevent: %s\n", err)
+	} else {
+		log.Printf("echo sent %s", cmd.Args)
 	}
 }
 
 func (c *Commands) caps(parent cloudevents.Event, cmd events.Command) {
+	ec := parent.Context.AsV02()
 	event := cloudevents.Event{
 		Context: cloudevents.EventContextV02{
-			Type:   events.Bot.Type("response"),
-			Source: *types.ParseURLRef("//botless/slack/echo"),
+			Type:       events.Bot.Type("response"),
+			Source:     *types.ParseURLRef("//botless/command/caps"),
+			Extensions: ec.Extensions,
 		}.AsV02(),
 		Data: events.Message{
 			Channel: cmd.Channel,
@@ -80,14 +84,18 @@ func (c *Commands) caps(parent cloudevents.Event, cmd events.Command) {
 	}
 	if _, err := c.Ce.Send(context.TODO(), event); err != nil {
 		log.Printf("failed to send cloudevent: %s\n", err)
+	} else {
+		log.Printf("upper sent %s", cmd.Args)
 	}
 }
 
 func (c *Commands) flip(parent cloudevents.Event, cmd events.Command) {
+	ec := parent.Context.AsV02()
 	event := cloudevents.Event{
 		Context: cloudevents.EventContextV02{
-			Type:   events.Bot.Type("response"),
-			Source: *types.ParseURLRef("//botless/slack/echo"),
+			Type:       events.Bot.Type("response"),
+			Source:     *types.ParseURLRef("//botless/command/flip"),
+			Extensions: ec.Extensions,
 		}.AsV02(),
 		Data: events.Message{
 			Channel: cmd.Channel,
@@ -96,5 +104,7 @@ func (c *Commands) flip(parent cloudevents.Event, cmd events.Command) {
 	}
 	if _, err := c.Ce.Send(context.TODO(), event); err != nil {
 		log.Printf("failed to send cloudevent: %s\n", err)
+	} else {
+		log.Printf("flip sent %s", cmd.Args)
 	}
 }

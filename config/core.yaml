@@ -1,7 +1,7 @@
 apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
-  name: default-commands
+  name: core-commands
   labels:
     knative.dev/type: "function"
 spec:
@@ -10,7 +10,7 @@ spec:
       revisionTemplate:
         spec:
           container:
-            image: github.com/botless/commands/cmd/default/
+            image: github.com/botless/commands/cmd/core/
             env:
             - name: TARGET
               value: "http://slack-out-channel-7ls72.default.svc.cluster.local/" # <---------------   TODO: update this.
@@ -18,7 +18,7 @@ spec:
 apiVersion: eventing.knative.dev/v1alpha1
 kind: Subscription
 metadata:
-  name: default-commands
+  name: core-commands
 spec:
   channel:
     apiVersion: eventing.knative.dev/v1alpha1
@@ -28,4 +28,4 @@ spec:
     ref:
       apiVersion: serving.knative.dev/v1alpha1
       kind: Service
-      name: default-commands
+      name: core-commands

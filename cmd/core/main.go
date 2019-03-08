@@ -47,9 +47,9 @@ func _main(args []string) int {
 	if err := c.StartReceiver(ctx, cmds.Receive); err != nil {
 		log.Fatalf("Failed to start reveiver client: %s", err.Error())
 	}
-	log.Printf("default commands listening on :%d", env.Port)
+	log.Printf("core commands listening on :%d", env.Port)
 	<-ctx.Done()
-	log.Printf("default commands done")
+	log.Printf("core commands done")
 
 	return 0
 }
