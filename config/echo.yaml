@@ -4,6 +4,10 @@ metadata:
   name: echo-command
   labels:
     knative.dev/type: "function"
+    eventing.knative.dev/autotrigger: "true"
+  annotations:
+    trigger.eventing.knative.dev/filter: |
+      [{"type":"botless.bot.command.echo"}]
 spec:
   runLatest:
     configuration:
@@ -16,21 +20,4 @@ spec:
               value: "http://default-broker.default.svc.cluster.local"
             - name: STRICT_TYPE
               value: "botless.bot.command.echo"
----
-apiVersion: eventing.knative.dev/v1alpha1
-kind: Trigger
-metadata:
-  name: echo-command
-spec:
-  filter:
-    sourceAndType:
-      type: botless.bot.command.echo
-  subscriber:
-    ref:
-      apiVersion: serving.knative.dev/v1alpha1
-      kind: Service
-      name: echo-command
-
-
-
 

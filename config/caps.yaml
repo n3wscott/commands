@@ -4,6 +4,10 @@ metadata:
   name: caps-command
   labels:
     knative.dev/type: "function"
+    eventing.knative.dev/autotrigger: "true"
+  annotations:
+    trigger.eventing.knative.dev/filter: |
+      [{"type":"botless.bot.command.caps"}]
 spec:
   runLatest:
     configuration:
@@ -16,17 +20,3 @@ spec:
               value: "http://default-broker.default.svc.cluster.local"
             - name: STRICT_TYPE
               value: "botless.bot.command.caps"
----
-apiVersion: eventing.knative.dev/v1alpha1
-kind: Trigger
-metadata:
-  name: caps-command
-spec:
-  filter:
-    sourceAndType:
-      type: botless.bot.command.caps
-  subscriber:
-    ref:
-      apiVersion: serving.knative.dev/v1alpha1
-      kind: Service
-      name: caps-command
