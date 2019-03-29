@@ -134,7 +134,9 @@ func (c *Commands) Fibonacci(parent cloudevents.Event) *cloudevents.Event {
 			}.AsV02(),
 			Data: events.Command{
 				Channel: cmd.Channel,
-				Cmd:     result,
+				Cmd:     cmd.Cmd,
+				Author:  cmd.Author,
+				Args:    result,
 			},
 		}
 	}
