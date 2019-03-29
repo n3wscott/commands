@@ -96,13 +96,11 @@ func (c *Commands) Fibonacci(parent cloudevents.Event) *cloudevents.Event {
 	if len(n) == 1 {
 		if x, err := strconv.Atoi(cmd.Args); err != nil || x > 30 {
 			result = "bad number, n < 30"
-		} else if x >= 2 {
+		} else if x >= 1 {
 			// prime it
-			result = fmt.Sprintf("0 1 %d", x-2)
+			result = fmt.Sprintf("0 1 %d", x-1)
 			keepFib = true
-		} else if x == 1 {
-			result = "1"
-		} else {
+		} else if x == 0 {
 			result = "0"
 		}
 	} else if len(n) == 3 {
@@ -134,9 +132,9 @@ func (c *Commands) Fibonacci(parent cloudevents.Event) *cloudevents.Event {
 				Source:     *types.ParseURLRef("//botless/command/fib"),
 				Extensions: ec.Extensions,
 			}.AsV02(),
-			Data: events.Message{
+			Data: events.Command{
 				Channel: cmd.Channel,
-				Text:    result,
+				Cmd:     result,
 			},
 		}
 	}
