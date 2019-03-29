@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"context"
 	"fmt"
 	"github.com/botless/events/pkg/events"
 	"github.com/cloudevents/sdk-go/pkg/cloudevents"
@@ -17,39 +16,38 @@ type Commands struct {
 	StrictType string
 }
 
-func (c *Commands) Receive(event cloudevents.Event) {
-	// don't block the caller.
-	go c.receive(event)
-}
-
-func (c *Commands) receive(event cloudevents.Event) {
+func (c *Commands) Receive(event cloudevents.Event, resp *cloudevents.EventResponse) {
 	if c.StrictType != "" && event.Type() != c.StrictType {
 		return
 	}
+	var re *cloudevents.Event
 	switch event.Type() {
 	case "botless.bot.command.echo":
-		c.Echo(event)
+		re = c.Echo(event)
 	case "botless.bot.command.caps":
-		c.Caps(event)
+		re = c.Caps(event)
 	case "botless.bot.command.flip":
-		c.Flip(event)
+		re = c.Flip(event)
 	default:
 		// ignore
 		log.Printf("botless command ignored event type %q", event.Type())
 	}
+	if re != nil {
+		resp.RespondWith(200, re)
+	}
 }
 
-func (c *Commands) Echo(parent cloudevents.Event) {
+func (c *Commands) Echo(parent cloudevents.Event) *cloudevents.Event {
 	if parent.Type() != "botless.bot.command.echo" {
-		return
+		return nil
 	}
 	cmd := &events.Command{}
 	if err := parent.DataAs(cmd); err != nil {
 		log.Printf("failed to get events.Command from %s", parent.Type())
-		return
+		return nil
 	}
 	ec := parent.Context.AsV02()
-	event := cloudevents.Event{
+	return &cloudevents.Event{
 		Context: cloudevents.EventContextV02{
 			Type:       events.Bot.Type("response"),
 			Source:     *types.ParseURLRef("//botless/command/echo"),
@@ -60,24 +58,19 @@ func (c *Commands) Echo(parent cloudevents.Event) {
 			Text:    cmd.Args,
 		},
 	}
-	if _, err := c.Ce.Send(context.TODO(), event); err != nil {
-		log.Printf("failed to send cloudevent: %s\n", err)
-	} else {
-		log.Printf("echo sent %s", cmd.Args)
-	}
 }
 
-func (c *Commands) Caps(parent cloudevents.Event) {
+func (c *Commands) Caps(parent cloudevents.Event) *cloudevents.Event {
 	if parent.Type() != "botless.bot.command.caps" {
-		return
+		return nil
 	}
 	cmd := &events.Command{}
 	if err := parent.DataAs(cmd); err != nil {
 		log.Printf("failed to get events.Command from %s", parent.Type())
-		return
+		return nil
 	}
 	ec := parent.Context.AsV02()
-	event := cloudevents.Event{
+	return &cloudevents.Event{
 		Context: cloudevents.EventContextV02{
 			Type:       events.Bot.Type("response"),
 			Source:     *types.ParseURLRef("//botless/command/caps"),
@@ -88,24 +81,19 @@ func (c *Commands) Caps(parent cloudevents.Event) {
 			Text:    strings.ToUpper(cmd.Args),
 		},
 	}
-	if _, err := c.Ce.Send(context.TODO(), event); err != nil {
-		log.Printf("failed to send cloudevent: %s\n", err)
-	} else {
-		log.Printf("upper sent %s", cmd.Args)
-	}
 }
 
-func (c *Commands) Flip(parent cloudevents.Event) {
+func (c *Commands) Flip(parent cloudevents.Event) *cloudevents.Event {
 	if parent.Type() != "botless.bot.command.flip" {
-		return
+		return nil
 	}
 	cmd := &events.Command{}
 	if err := parent.DataAs(cmd); err != nil {
 		log.Printf("failed to get events.Command from %s", parent.Type())
-		return
+		return nil
 	}
 	ec := parent.Context.AsV02()
-	event := cloudevents.Event{
+	return &cloudevents.Event{
 		Context: cloudevents.EventContextV02{
 			Type:       events.Bot.Type("response"),
 			Source:     *types.ParseURLRef("//botless/command/flip"),
@@ -115,10 +103,5 @@ func (c *Commands) Flip(parent cloudevents.Event) {
 			Channel: cmd.Channel,
 			Text:    fmt.Sprintf("https://tableflip.dev/?flip=%s", url.QueryEscape(cmd.Args)),
 		},
-	}
-	if _, err := c.Ce.Send(context.TODO(), event); err != nil {
-		log.Printf("failed to send cloudevent: %s\n", err)
-	} else {
-		log.Printf("flip sent %s", cmd.Args)
 	}
 }

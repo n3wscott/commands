@@ -16,7 +16,5 @@ spec:
           container:
             image: github.com/botless/commands/cmd/core/
             env:
-            - name: TARGET
-              value: "http://default-broker.default.svc.cluster.local"
             - name: STRICT_TYPE
               value: "botless.bot.command.caps"

@@ -3,31 +3,31 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:6d9b321507660027e14d1780f77846124e7e82a2b33795250b231b27d7c96cc6"
+  digest = "1:9469c067fb1a7a7dd87417f22a30e26aa5af683f582f8487b42ffcb70576d55d"
   name = "github.com/botless/events"
   packages = ["pkg/events"]
   pruneopts = "UT"
-  revision = "230912b44a3d5e6f4a15aab41e39a10238845baf"
+  revision = "650e23113ba174a4daeb920eee8fb69c434d4cf5"
 
 [[projects]]
-  digest = "1:3f4e0df26a31e7b21aa85f4657725a6e749f42d455c94049d1bb42b614f8816f"
+  digest = "1:f616892b62757b2dcd70957602981d4f05c4d75017138cea02b3845d07c18785"
   name = "github.com/cloudevents/sdk-go"
   packages = [
     "pkg/cloudevents",
     "pkg/cloudevents/client",
-    "pkg/cloudevents/client/http",
     "pkg/cloudevents/codec",
     "pkg/cloudevents/context",
     "pkg/cloudevents/datacodec",
     "pkg/cloudevents/datacodec/json",
     "pkg/cloudevents/datacodec/xml",
+    "pkg/cloudevents/observability",
     "pkg/cloudevents/transport",
     "pkg/cloudevents/transport/http",
     "pkg/cloudevents/types",
   ]
   pruneopts = "UT"
-  revision = "965e37cc1790bf9c4920b429c8005e78c722c33c"
-  version = "0.3.0"
+  revision = "e00e75c8a1befe895cc00def1f88adb611195159"
+  version = "0.4.4"
 
 [[projects]]
   digest = "1:582b704bebaa06b48c29b0cec224a6058a09c86883aaddabde889cd1a5f73e1b"
@@ -38,12 +38,40 @@
   version = "v1.1.1"
 
 [[projects]]
+  digest = "1:67474f760e9ac3799f740db2c489e6423a4cde45520673ec123ac831ad849cb8"
+  name = "github.com/hashicorp/golang-lru"
+  packages = ["simplelru"]
+  pruneopts = "UT"
+  revision = "7087cb70de9f7a8bc0a10c375cb0d2280a8edf9c"
+  version = "v0.5.1"
+
+[[projects]]
   digest = "1:edbef42561faa44c19129b68d1e109fbc1647f63239250391eadc8d0e7c9f669"
   name = "github.com/kelseyhightower/envconfig"
   packages = ["."]
   pruneopts = "UT"
   revision = "f611eb38b3875cc3bd991ca91c51d06446afa14c"
   version = "v1.3.0"
+
+[[projects]]
+  digest = "1:8abdd6af5d3880ba630f244ca3575fc2ae52a98d95c89f5e61ebb6dc9935bb7f"
+  name = "go.opencensus.io"
+  packages = [
+    ".",
+    "exemplar",
+    "internal",
+    "internal/tagencoding",
+    "stats",
+    "stats/internal",
+    "stats/view",
+    "tag",
+    "trace",
+    "trace/internal",
+    "trace/tracestate",
+  ]
+  pruneopts = "UT"
+  revision = "3b8e2721f2c3c01fa1bf4a2e455874e7b8319cd7"
+  version = "v0.19.2"
 
 [solve-meta]
   analyzer-name = "dep"
@@ -52,7 +80,6 @@
     "github.com/botless/events/pkg/events",
     "github.com/cloudevents/sdk-go/pkg/cloudevents",
     "github.com/cloudevents/sdk-go/pkg/cloudevents/client",
-    "github.com/cloudevents/sdk-go/pkg/cloudevents/client/http",
     "github.com/cloudevents/sdk-go/pkg/cloudevents/transport/http",
     "github.com/cloudevents/sdk-go/pkg/cloudevents/types",
     "github.com/kelseyhightower/envconfig",
