@@ -1,0 +1,20 @@
+apiVersion: serving.knative.dev/v1alpha1
+kind: Service
+metadata:
+  name: fibonacci-command
+  labels:
+    knative.dev/type: "function"
+    eventing.knative.dev/autotrigger: "true"
+  annotations:
+    trigger.eventing.knative.dev/filter: |
+      [{"type":"botless.bot.command.fib"}]
+spec:
+  runLatest:
+    configuration:
+      revisionTemplate:
+        spec:
+          container:
+            image: github.com/botless/commands/cmd/core/
+            env:
+            - name: STRICT_TYPE
+              value: "botless.bot.command.fib"
