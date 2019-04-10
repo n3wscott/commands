@@ -83,7 +83,7 @@ func (c *Commands) Fibonacci(parent cloudevents.Event) *cloudevents.Event {
 		log.Printf("failed to get events.Command from %s", parent.Type())
 		return nil
 	}
-	ec := parent.Context.AsV02()
+	//ec := parent.Context.AsV02()
 
 	var result string
 	var keepFib bool
@@ -94,8 +94,8 @@ func (c *Commands) Fibonacci(parent cloudevents.Event) *cloudevents.Event {
 
 	n := strings.Split(cmd.Args, " ")
 	if len(n) == 1 {
-		if x, err := strconv.Atoi(cmd.Args); err != nil || x > 30 {
-			result = "bad number, n < 30"
+		if x, err := strconv.Atoi(cmd.Args); err != nil || x > 100 {
+			result = "bad number, n < 100"
 		} else if x >= 1 {
 			// prime it
 			result = fmt.Sprintf("0 1 %d", x-1)
@@ -116,9 +116,9 @@ func (c *Commands) Fibonacci(parent cloudevents.Event) *cloudevents.Event {
 		if err != nil {
 			result = "bad number"
 		} else if x == 0 {
-			result = fmt.Sprintf("%d", n1+n2)
+			result = fmt.Sprintf("%d", n1)
 		} else {
-			result = fmt.Sprintf("%d %d %d", n1, n1+n2, x-1)
+			result = fmt.Sprintf("%d %d %d", n1, n2+n1, x-1)
 			keepFib = true
 		}
 	} else {
@@ -128,9 +128,9 @@ func (c *Commands) Fibonacci(parent cloudevents.Event) *cloudevents.Event {
 	if keepFib {
 		return &cloudevents.Event{
 			Context: cloudevents.EventContextV02{
-				Type:       events.Bot.Type("command", "fib"),
-				Source:     *types.ParseURLRef("//botless/command/fib"),
-				Extensions: ec.Extensions,
+				Type:   events.Bot.Type("command", "fib"),
+				Source: *types.ParseURLRef("//botless/command/fib"),
+				//Extensions: ec.Extensions,
 			}.AsV02(),
 			Data: events.Command{
 				Channel: cmd.Channel,
@@ -142,9 +142,9 @@ func (c *Commands) Fibonacci(parent cloudevents.Event) *cloudevents.Event {
 	}
 	return &cloudevents.Event{
 		Context: cloudevents.EventContextV02{
-			Type:       events.Bot.Type("response"),
-			Source:     *types.ParseURLRef("//botless/command/fib"),
-			Extensions: ec.Extensions,
+			Type:   events.Bot.Type("response"),
+			Source: *types.ParseURLRef("//botless/command/fib"),
+			//Extensions: ec.Extensions,
 		}.AsV02(),
 		Data: events.Message{
 			Channel: cmd.Channel,
