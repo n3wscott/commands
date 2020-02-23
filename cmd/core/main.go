@@ -3,9 +3,7 @@ package main
 import (
 	"context"
 	"github.com/botless/commands/pkg/commands"
-	"github.com/cloudevents/sdk-go/pkg/cloudevents/client"
-	clienthttp "github.com/cloudevents/sdk-go/pkg/cloudevents/client/http"
-	"github.com/cloudevents/sdk-go/pkg/cloudevents/transport/http"
+	cloudevents "github.com/cloudevents/sdk-go"
 	"github.com/kelseyhightower/envconfig"
 	"log"
 	"os"
@@ -33,13 +31,7 @@ func _main(args []string) int {
 		return 1
 	}
 
-	c, err := clienthttp.New(
-		http.WithTarget(env.Target),
-		http.WithPort(env.Port),
-		http.WithBinaryEncoding(),
-		client.WithTimeNow(),
-		client.WithUUIDs(),
-	)
+	c, err := cloudevents.NewDefaultClient()
 	if err != nil {
 		log.Fatalf("Failed to create client: %s", err.Error())
 	}

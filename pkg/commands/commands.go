@@ -3,17 +3,16 @@ package commands
 import (
 	"context"
 	"fmt"
-	"github.com/botless/events/pkg/events"
-	"github.com/cloudevents/sdk-go/pkg/cloudevents"
-	"github.com/cloudevents/sdk-go/pkg/cloudevents/client"
-	"github.com/cloudevents/sdk-go/pkg/cloudevents/types"
 	"log"
 	"net/url"
 	"strings"
+	
+	cloudevents "github.com/cloudevents/sdk-go"
+	"github.com/botless/events/pkg/events"
 )
 
 type Commands struct {
-	Ce         client.Client
+	Ce         cloudevents.Client
 	StrictType string
 }
 
@@ -52,7 +51,7 @@ func (c *Commands) Echo(parent cloudevents.Event) {
 	event := cloudevents.Event{
 		Context: cloudevents.EventContextV02{
 			Type:       events.Bot.Type("response"),
-			Source:     *types.ParseURLRef("//botless/command/echo"),
+			Source:     *cloudevents.ParseURLRef("//botless/command/echo"),
 			Extensions: ec.Extensions,
 		}.AsV02(),
 		Data: events.Message{
@@ -60,7 +59,7 @@ func (c *Commands) Echo(parent cloudevents.Event) {
 			Text:    cmd.Args,
 		},
 	}
-	if _, err := c.Ce.Send(context.TODO(), event); err != nil {
+	if _, _, err := c.Ce.Send(context.TODO(), event); err != nil {
 		log.Printf("failed to send cloudevent: %s\n", err)
 	} else {
 		log.Printf("echo sent %s", cmd.Args)
@@ -80,7 +79,7 @@ func (c *Commands) Caps(parent cloudevents.Event) {
 	event := cloudevents.Event{
 		Context: cloudevents.EventContextV02{
 			Type:       events.Bot.Type("response"),
-			Source:     *types.ParseURLRef("//botless/command/caps"),
+			Source:     *cloudevents.ParseURLRef("//botless/command/caps"),
 			Extensions: ec.Extensions,
 		}.AsV02(),
 		Data: events.Message{
@@ -88,7 +87,7 @@ func (c *Commands) Caps(parent cloudevents.Event) {
 			Text:    strings.ToUpper(cmd.Args),
 		},
 	}
-	if _, err := c.Ce.Send(context.TODO(), event); err != nil {
+	if _, _, err := c.Ce.Send(context.TODO(), event); err != nil {
 		log.Printf("failed to send cloudevent: %s\n", err)
 	} else {
 		log.Printf("upper sent %s", cmd.Args)
@@ -108,7 +107,7 @@ func (c *Commands) Flip(parent cloudevents.Event) {
 	event := cloudevents.Event{
 		Context: cloudevents.EventContextV02{
 			Type:       events.Bot.Type("response"),
-			Source:     *types.ParseURLRef("//botless/command/flip"),
+			Source:     *cloudevents.ParseURLRef("//botless/command/flip"),
 			Extensions: ec.Extensions,
 		}.AsV02(),
 		Data: events.Message{
@@ -116,7 +115,7 @@ func (c *Commands) Flip(parent cloudevents.Event) {
 			Text:    fmt.Sprintf("https://tableflip.dev/?flip=%s", url.QueryEscape(cmd.Args)),
 		},
 	}
-	if _, err := c.Ce.Send(context.TODO(), event); err != nil {
+	if _, _, err := c.Ce.Send(context.TODO(), event); err != nil {
 		log.Printf("failed to send cloudevent: %s\n", err)
 	} else {
 		log.Printf("flip sent %s", cmd.Args)
