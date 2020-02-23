@@ -4,4 +4,4 @@
 
 [[override]]
   name = "github.com/cloudevents/sdk-go"
-  version = "0.10.0"
+  revision = "3673e23532dccb38196f600eec7e8b7090ecfb12"
